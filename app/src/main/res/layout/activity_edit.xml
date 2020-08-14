@@ -6,7 +6,70 @@
     android:layout_height="match_parent"
     tools:context=".EditActivity"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/panel">
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/back_icon"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp">
+        </ImageButton>
+
+        <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/delete_icon"/>
+
+        <ImageButton
+            android:id="@+id/infoButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_toLeftOf="@id/deleteButton"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/info_icon"
+            android:layout_toStartOf="@id/deleteButton" />
+
+        <ImageButton
+            android:id="@+id/copyButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_toLeftOf="@id/infoButton"
+            android:layout_toStartOf="@id/infoButton"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/copy_icon"
+            />
+
+        <ImageButton
+            android:layout_toStartOf="@id/copyButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_toLeftOf="@id/copyButton"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/settings_icon"
+            />
+
+
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/titleEdit"
@@ -21,13 +84,14 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:windowSoftInputMode="stateUnchanged"
+        android:layout_below="@id/panel"
         />
     
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/titleEdit"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp">
 

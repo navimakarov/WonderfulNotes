@@ -2,5 +2,5 @@
     <string name="app_name">Wonderful Thoughts</string>
     <string name="fab_text">New thought</string>
     <string name="title_edit_hint">Note Title</string>
-    <string name="thought_edit_hint">Thought</string>
+    <string name="thought_edit_hint">Start writing...</string>
 </resources>
