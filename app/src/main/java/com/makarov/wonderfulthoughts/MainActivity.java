@@ -6,18 +6,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView thoughtsRecView;
+
     private ExtendedFloatingActionButton newThoughtBtn;
+
     private static final String TAG = "Program Logs";
 
     @Override
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         thoughtsRecView.setAdapter(adapter);
         thoughtsRecView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 }
 

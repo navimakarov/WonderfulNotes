@@ -58,6 +58,7 @@
             />
 
         <ImageButton
+            android:id="@+id/settingsButton"
             android:layout_toStartOf="@id/copyButton"
             android:layout_width="32dp"
             android:layout_height="32dp"

@@ -2,6 +2,7 @@ package com.makarov.wonderfulthoughts;
 
 public class Thought {
     private String date, name, text;
+    private boolean highlighted = false;
 
     public Thought(String date, String name, String text) {
         this.date = date;
@@ -31,5 +32,13 @@ public class Thought {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public void highlight() {
+        highlighted = true;
+    }
+
+    public void remove_highlight() {
+        highlighted = false;
     }
 }

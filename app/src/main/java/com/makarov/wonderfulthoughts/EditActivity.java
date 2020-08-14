@@ -4,18 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.ImageButton;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class EditActivity extends AppCompatActivity {
 
     private EditText titleEdit, thoughtEdit;
+
     private FloatingActionButton createButton;
+
+    private ImageButton backButton, deleteButton, infoButton, copyButton, settingsButton;
 
     private final String TAG = "ERROR";
     @Override
@@ -26,24 +28,32 @@ public class EditActivity extends AppCompatActivity {
         titleEdit = (EditText) findViewById(R.id.titleEdit);
         thoughtEdit = (EditText) findViewById(R.id.thoughtEdit);
 
-        Thread thread = new Thread(new Runnable() {
+        backButton = (ImageButton) findViewById(R.id.backButton);
+        deleteButton = (ImageButton)  findViewById(R.id.deleteButton);
+        infoButton = (ImageButton) findViewById(R.id.infoButton);
+        copyButton = (ImageButton) findViewById(R.id.copyButton);
+        settingsButton = (ImageButton) findViewById(R.id.settingsButton);
+
+        titleEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void run() {
-                while(true){
-                    try {
-                        if (thoughtEdit.hasFocus()) {
-                            createButton.setVisibility(View.INVISIBLE);
-                        } else {
-                            createButton.setVisibility(View.VISIBLE);
-                        }
-                    }
-                    catch (Exception e){
-                        Log.d(TAG, e.toString());
-                    }
+            public void onFocusChange(View v, boolean hasFocus) {
+                createButton.setVisibility(View.VISIBLE);
+                backButton.setBackgroundResource(R.drawable.tick_icon);
+            }
+        });
+        thoughtEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                backButton.setBackgroundResource(R.drawable.tick_icon);
+                if(hasFocus){
+                    createButton.setVisibility(View.INVISIBLE);
+                }
+                else{
+                    createButton.setVisibility(View.VISIBLE);
                 }
             }
         });
-        thread.start();
+
 
 
         createButton = (FloatingActionButton) findViewById(R.id.createButton);

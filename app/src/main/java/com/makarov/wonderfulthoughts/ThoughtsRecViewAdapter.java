@@ -3,6 +3,7 @@ package com.makarov.wonderfulthoughts;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,7 @@ public class ThoughtsRecViewAdapter extends RecyclerView.Adapter<ThoughtsRecView
         holder.date.setText(thoughts.get(position).getDate());
         holder.name.setText(thoughts.get(position).getName());
         holder.text.setText(thoughts.get(position).getText());
+        holder.itemView.setTag(position);
     }
 
     @Override
@@ -47,11 +49,28 @@ public class ThoughtsRecViewAdapter extends RecyclerView.Adapter<ThoughtsRecView
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         private TextView date, name, text;
-        public ViewHolder(@NonNull View itemView) {
+        private ImageButton highlight;
+        public ViewHolder(@NonNull final View itemView) {
             super(itemView);
             date = itemView.findViewById(R.id.date);
             name = itemView.findViewById(R.id.name);
             text = itemView.findViewById(R.id.text);
+            highlight = itemView.findViewById(R.id.highlight);
+
+            highlight.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String tag = highlight.getTag().toString();
+                    if(tag.equals("inactive")){
+                        highlight.setTag("active");
+                        highlight.setBackgroundResource(R.drawable.star_active_icon);
+                    }
+                    else{
+                        highlight.setTag("inactive");
+                        highlight.setBackgroundResource(R.drawable.star_inactive_icon);
+                    }
+                }
+            });
 
         }
     }
