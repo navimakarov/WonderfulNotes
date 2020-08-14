@@ -2,14 +2,25 @@ package com.makarov.wonderfulthoughts;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -20,10 +31,17 @@ public class EditActivity extends AppCompatActivity {
     private ImageButton backButton, deleteButton, infoButton, copyButton, settingsButton;
 
     private final String TAG = "ERROR";
+
+    private SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+
+        db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
+        db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
+        //db.execSQL("DROP TABLE notes;");
 
         titleEdit = (EditText) findViewById(R.id.titleEdit);
         thoughtEdit = (EditText) findViewById(R.id.thoughtEdit);
@@ -39,18 +57,56 @@ public class EditActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 createButton.setVisibility(View.VISIBLE);
                 backButton.setBackgroundResource(R.drawable.tick_icon);
+                backButton.setTag("Save");
             }
         });
         thoughtEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 backButton.setBackgroundResource(R.drawable.tick_icon);
+                backButton.setTag("Save");
                 if(hasFocus){
                     createButton.setVisibility(View.INVISIBLE);
                 }
                 else{
                     createButton.setVisibility(View.VISIBLE);
                 }
+            }
+        });
+
+        thoughtEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                backButton.setBackgroundResource(R.drawable.tick_icon);
+                backButton.setTag("Save");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        titleEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                backButton.setBackgroundResource(R.drawable.tick_icon);
+                backButton.setTag("Save");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -67,7 +123,36 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(backButton.getTag().toString().equals("Save")) {
+                    backButton.setBackgroundResource(R.drawable.back_icon);
+                    save();
+                    backButton.setTag("Back");
+                }
+                else{
+                    db.close();
+                    Intent intent = new Intent(EditActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
 
+    }
 
+    public void save() {
+        Date todayDate = Calendar.getInstance().getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String date = formatter.format(todayDate);
+        String title = titleEdit.getText().toString();
+        String note = thoughtEdit.getText().toString();
+
+        ContentValues cv = new ContentValues();
+        cv.put("date", date);
+        cv.put("title", title);
+        cv.put("note", note);
+        cv.put("highlight", 0);
+        db.insert("notes", null, cv);
     }
 }
