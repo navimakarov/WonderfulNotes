@@ -14,6 +14,7 @@ import android.view.View;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, EditActivity.class);
+                intent.putExtra("id", "null");
                 startActivity(intent);
             }
         });
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             }
             while(query.moveToNext());
         }
+        Collections.reverse(notes);
         query.close();
         db.close();
     }

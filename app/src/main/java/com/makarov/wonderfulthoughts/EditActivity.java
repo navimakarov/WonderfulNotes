@@ -39,12 +39,25 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
+        Intent intent = getIntent();
+        final String id = intent.getStringExtra("id");
+
+
         db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
         db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
         //db.execSQL("DROP TABLE notes;");
 
         titleEdit = (EditText) findViewById(R.id.titleEdit);
         thoughtEdit = (EditText) findViewById(R.id.thoughtEdit);
+
+        if(!id.equals("null")){
+            Cursor query = db.rawQuery("SELECT * FROM notes;", null);
+            for(int i = 0; i < Integer.parseInt(id); i++){
+                query.moveToNext();
+            }
+            titleEdit.setText(query.getString(2));
+            thoughtEdit.setText(query.getString(3));
+        }
 
         backButton = (ImageButton) findViewById(R.id.backButton);
         deleteButton = (ImageButton)  findViewById(R.id.deleteButton);
@@ -128,20 +141,31 @@ public class EditActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(backButton.getTag().toString().equals("Save")) {
                     backButton.setBackgroundResource(R.drawable.back_icon);
-                    save();
+                    save(id);
                     backButton.setTag("Back");
                 }
                 else{
-                    db.close();
-                    Intent intent = new Intent(EditActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    exit();
+                }
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(id.equals("null")){
+                    exit();
+                }
+                else{
+                    //db.delete("notes", "id = " + id, null); TODO Fix bug
+                    exit();
                 }
             }
         });
 
     }
 
-    public void save() {
+    public void save(String id) {
         Date todayDate = Calendar.getInstance().getTime();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String date = formatter.format(todayDate);
@@ -153,6 +177,21 @@ public class EditActivity extends AppCompatActivity {
         cv.put("title", title);
         cv.put("note", note);
         cv.put("highlight", 0);
-        db.insert("notes", null, cv);
+
+
+        if(id.equals("null")){
+            db.insert("notes", null, cv);
+        }
+        else{
+            db.update("notes", cv, "id = ?", new String[] { id });
+        }
+
     }
+
+    public void exit() {
+        db.close();
+        Intent intent = new Intent(EditActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+
 }

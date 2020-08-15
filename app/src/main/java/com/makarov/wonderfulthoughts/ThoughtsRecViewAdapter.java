@@ -1,10 +1,13 @@
 package com.makarov.wonderfulthoughts;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -69,6 +72,15 @@ public class ThoughtsRecViewAdapter extends RecyclerView.Adapter<ThoughtsRecView
                         highlight.setTag("inactive");
                         highlight.setBackgroundResource(R.drawable.star_inactive_icon);
                     }
+                }
+            });
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), EditActivity.class);
+                    intent.putExtra("id", String.valueOf(thoughts.size() - Integer.parseInt(itemView.getTag().toString())));
+                    v.getContext().startActivity(intent);
                 }
             });
 
