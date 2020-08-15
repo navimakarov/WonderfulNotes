@@ -1,6 +1,8 @@
 package com.makarov.wonderfulthoughts;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
@@ -23,11 +26,16 @@ public class MainActivity extends AppCompatActivity {
     private ExtendedFloatingActionButton newThoughtBtn;
 
     private static final String TAG = "Program Logs";
+    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
+        db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
+
         newThoughtBtn = findViewById(R.id.newThoughtBtn);
         newThoughtBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,11 +55,22 @@ public class MainActivity extends AppCompatActivity {
 
         thoughtsRecView.setAdapter(adapter);
         thoughtsRecView.setLayoutManager(new LinearLayoutManager(this));
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                db.delete("notes", "id=" + viewHolder.itemView.getTag(), null);
+                Toast.makeText(MainActivity.this, "Test", Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(thoughtsRecView);
     }
 
     public void read_from_db(ArrayList<Thought> notes) {
-        SQLiteDatabase db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
-        db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
         Cursor query = db.rawQuery("SELECT * FROM notes;", null);
 
         notes.clear();
@@ -72,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         }
         Collections.reverse(notes);
         query.close();
-        db.close();
     }
 }
 

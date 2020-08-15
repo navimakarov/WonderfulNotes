@@ -57,6 +57,7 @@ public class EditActivity extends AppCompatActivity {
             }
             titleEdit.setText(query.getString(2));
             thoughtEdit.setText(query.getString(3));
+            query.close();
         }
 
         backButton = (ImageButton) findViewById(R.id.backButton);
@@ -157,7 +158,8 @@ public class EditActivity extends AppCompatActivity {
                     exit();
                 }
                 else{
-                    //db.delete("notes", "id = " + id, null); TODO Fix bug
+                    Log.d(TAG, id);
+                    db.delete("notes", "id=" + id, null);
                     exit();
                 }
             }
