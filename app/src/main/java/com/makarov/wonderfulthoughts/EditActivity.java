@@ -50,9 +50,9 @@ public class EditActivity extends AppCompatActivity {
         titleEdit = (EditText) findViewById(R.id.titleEdit);
         thoughtEdit = (EditText) findViewById(R.id.thoughtEdit);
 
-        if(!id.equals("null")){
-            Cursor query = db.rawQuery("SELECT * FROM notes;", null);
-            for(int i = 0; i < Integer.parseInt(id); i++){
+        Cursor query = db.rawQuery("SELECT * FROM notes;", null);
+        if(!id.equals("null") && query.moveToFirst()){
+            while(query.getInt(0) != Integer.parseInt(id)){
                 query.moveToNext();
             }
             titleEdit.setText(query.getString(2));

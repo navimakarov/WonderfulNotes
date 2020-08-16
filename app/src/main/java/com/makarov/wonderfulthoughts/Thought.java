@@ -3,11 +3,13 @@ package com.makarov.wonderfulthoughts;
 public class Thought {
     private String date, name, text;
     private boolean highlighted = false;
+    private int id;
 
-    public Thought(String date, String name, String text) {
+    public Thought(String date, String name, String text, int id) {
         this.date = date;
         this.name = name;
         this.text = text;
+        this.id = id;
     }
 
     public String getDate() {
@@ -32,6 +34,14 @@ public class Thought {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void highlight() {

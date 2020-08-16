@@ -36,7 +36,7 @@ public class ThoughtsRecViewAdapter extends RecyclerView.Adapter<ThoughtsRecView
         holder.date.setText(thoughts.get(position).getDate());
         holder.name.setText(thoughts.get(position).getName());
         holder.text.setText(thoughts.get(position).getText());
-        holder.itemView.setTag(position);
+        holder.itemView.setTag(thoughts.get(position).getId());
     }
 
     @Override
@@ -79,7 +79,7 @@ public class ThoughtsRecViewAdapter extends RecyclerView.Adapter<ThoughtsRecView
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), EditActivity.class);
-                    intent.putExtra("id", String.valueOf(thoughts.size() - Integer.parseInt(itemView.getTag().toString())));
+                    intent.putExtra("id", itemView.getTag().toString());
                     v.getContext().startActivity(intent);
                 }
             });
