@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+
 public class EditActivity extends AppCompatActivity {
 
     private EditText titleEdit, thoughtEdit;
@@ -70,19 +72,20 @@ public class EditActivity extends AppCompatActivity {
         copyButton = (ImageButton) findViewById(R.id.copyButton);
         settingsButton = (ImageButton) findViewById(R.id.settingsButton);
 
+        if(id.equals("null")){
+            backButton.setBackgroundResource(R.drawable.tick_icon);
+            backButton.setTag("Save");
+        }
+
         titleEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 createButton.setVisibility(View.VISIBLE);
-                backButton.setBackgroundResource(R.drawable.tick_icon);
-                backButton.setTag("Save");
             }
         });
         thoughtEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                backButton.setBackgroundResource(R.drawable.tick_icon);
-                backButton.setTag("Save");
                 if(hasFocus){
                     createButton.setVisibility(View.INVISIBLE);
                 }
@@ -145,9 +148,18 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(backButton.getTag().toString().equals("Save")) {
-                    backButton.setBackgroundResource(R.drawable.back_icon);
-                    save(id);
-                    backButton.setTag("Back");
+                    boolean savedSuccessfully = save(id);
+                    if(!savedSuccessfully) {
+                        exit("Cannot save an empty note");
+                    }
+                    else {
+                        if (id.equals("null"))
+                            exit();
+                        else {
+                            backButton.setBackgroundResource(R.drawable.back_icon);
+                            backButton.setTag("Back");
+                        }
+                    }
                 }
                 else{
                     exit();
@@ -182,12 +194,19 @@ public class EditActivity extends AppCompatActivity {
 
     }
 
-    public void save(String id) {
+    public boolean save(String id) {
         Date todayDate = Calendar.getInstance().getTime();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String date = formatter.format(todayDate);
         String title = titleEdit.getText().toString();
         String note = thoughtEdit.getText().toString();
+
+        if(title.equals("")) {
+            if(note.equals("") && id.equals("null"))
+                return false;
+            else
+                title = "Untitled note";
+        }
 
         ContentValues cv = new ContentValues();
         cv.put("date", date);
@@ -202,6 +221,7 @@ public class EditActivity extends AppCompatActivity {
         else{
             db.update("notes", cv, "id = ?", new String[] { id });
         }
+        return true;
 
     }
 
@@ -209,6 +229,15 @@ public class EditActivity extends AppCompatActivity {
         db.close();
         Intent intent = new Intent(EditActivity.this, MainActivity.class);
         startActivity(intent);
+        finish();
+    }
+
+    public void exit(String error_message){
+        db.close();
+        Intent intent = new Intent(EditActivity.this, MainActivity.class);
+        intent.putExtra("error", "Cannot save an empty note");
+        startActivity(intent);
+        finish();
     }
 
 }

@@ -122,7 +122,7 @@
         android:src="@drawable/create_icon"
         android:tint="@color/White"
         app:tint="@color/White"
-        app:backgroundTint="@color/Orange"/>
+        app:backgroundTint="@color/colorPrimary"/>
 
 
 </RelativeLayout>

@@ -38,6 +38,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        thoughtsRecView = (RecyclerView) findViewById(R.id.thoughtsRecView);
+
+        Intent intent = getIntent();
+        if(intent.hasExtra("error")) {
+            String error = intent.getStringExtra("error");
+            Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+        }
+
         db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
         db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
         //db.execSQL("DROP TABLE notes;");
@@ -46,12 +54,13 @@ public class MainActivity extends AppCompatActivity {
         newThoughtBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                db.close();
                 Intent intent = new Intent(MainActivity.this, EditActivity.class);
                 intent.putExtra("id", "null");
                 startActivity(intent);
+                finish();
             }
         });
-        thoughtsRecView = (RecyclerView) findViewById(R.id.thoughtsRecView);
 
         read_from_db(notes);
 
@@ -101,5 +110,6 @@ public class MainActivity extends AppCompatActivity {
         Collections.reverse(notes);
         query.close();
     }
+
 
 }
