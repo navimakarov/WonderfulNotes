@@ -1,6 +1,7 @@
 package com.makarov.wonderfulthoughts;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 public class ThoughtsRecViewAdapter extends RecyclerView.Adapter<ThoughtsRecViewAdapter.ViewHolder> {
 
     private ArrayList <Thought> thoughts = new ArrayList<>();
+    private SQLiteDatabase db;
 
     public ThoughtsRecViewAdapter(){
 
@@ -36,6 +38,15 @@ public class ThoughtsRecViewAdapter extends RecyclerView.Adapter<ThoughtsRecView
         holder.date.setText(thoughts.get(position).getDate());
         holder.name.setText(thoughts.get(position).getName());
         holder.text.setText(thoughts.get(position).getText());
+
+        if(thoughts.get(position).highlighted()){
+            holder.highlight.setTag("active");
+            holder.highlight.setBackgroundResource(R.drawable.star_active_icon);
+        }
+        else{
+            holder.highlight.setTag("inactive");
+            holder.highlight.setBackgroundResource(R.drawable.star_inactive_icon);
+        }
         holder.itemView.setTag(thoughts.get(position).getId());
     }
 
@@ -64,13 +75,21 @@ public class ThoughtsRecViewAdapter extends RecyclerView.Adapter<ThoughtsRecView
                 @Override
                 public void onClick(View v) {
                     String tag = highlight.getTag().toString();
+                    String id = itemView.getTag().toString();
+
+                    db = v.getContext().openOrCreateDatabase("notes.db", v.getContext().MODE_PRIVATE, null);
+                    db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
+
                     if(tag.equals("inactive")){
                         highlight.setTag("active");
                         highlight.setBackgroundResource(R.drawable.star_active_icon);
+                        db.execSQL("UPDATE notes SET highlight = 1 WHERE id=" + id);
                     }
                     else{
                         highlight.setTag("inactive");
                         highlight.setBackgroundResource(R.drawable.star_inactive_icon);
+                        db.execSQL("UPDATE notes SET highlight = 0 WHERE id=" + id);
+
                     }
                 }
             });

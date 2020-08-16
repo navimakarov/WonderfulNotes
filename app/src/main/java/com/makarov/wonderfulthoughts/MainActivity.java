@@ -101,5 +101,5 @@ public class MainActivity extends AppCompatActivity {
         Collections.reverse(notes);
         query.close();
     }
-    
+
 }

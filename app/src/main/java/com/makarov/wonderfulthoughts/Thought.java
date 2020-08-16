@@ -51,4 +51,8 @@ public class Thought {
     public void remove_highlight() {
         highlighted = false;
     }
+
+    public boolean highlighted() {
+        return highlighted;
+    }
 }
