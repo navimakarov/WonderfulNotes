@@ -2,6 +2,8 @@ package com.makarov.wonderfulthoughts;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,6 +36,7 @@ public class EditActivity extends AppCompatActivity {
     private final String TAG = "ERROR";
 
     private SQLiteDatabase db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +166,17 @@ public class EditActivity extends AppCompatActivity {
                     db.delete("notes", "id=" + id, null);
                     exit();
                 }
+            }
+        });
+
+        copyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String note = thoughtEdit.getText().toString();
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("simple text", note);
+                clipboard.setPrimaryClip(clip);
+                Snackbar.make(v, "Text copied to clipboard", Snackbar.LENGTH_SHORT).show();
             }
         });
 
