@@ -58,18 +58,6 @@
             android:background="@drawable/copy_icon"
             />
 
-        <ImageButton
-            android:id="@+id/settingsButton"
-            android:layout_toStartOf="@id/copyButton"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_toLeftOf="@id/copyButton"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/settings_icon"
-            />
-
 
     </RelativeLayout>
 
