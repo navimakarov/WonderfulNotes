@@ -2,18 +2,26 @@ package com.makarov.wonderfulthoughts;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -32,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ThoughtsRecViewAdapter adapter;
     private ArrayList<Thought> notes = new ArrayList<>();
+    private Drawable icon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }).attachToRecyclerView(thoughtsRecView);
+
     }
 
     public void read_from_db(ArrayList<Thought> notes) {
@@ -110,6 +120,4 @@ public class MainActivity extends AppCompatActivity {
         Collections.reverse(notes);
         query.close();
     }
-
-
 }

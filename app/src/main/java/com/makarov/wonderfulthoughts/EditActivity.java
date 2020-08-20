@@ -2,10 +2,13 @@ package com.makarov.wonderfulthoughts;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -192,7 +195,37 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+        infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String note = thoughtEdit.getText().toString();
+                int lines = note.split(" ").length;
+                int charsNumber = note.length();
+                int charsNumberWithoutSpaces = note.replace(" ", "").length();
+                int words = note.split("\\s+").length;
+
+                String message = "Lines: " + String.valueOf(lines) + "\n"
+                        + "Words: " + String.valueOf(words) + "\n"
+                        + "Characters (With Spaces): " + String.valueOf(charsNumber) + "\n"
+                        + "Characters (Without Spaces): " + String.valueOf((charsNumberWithoutSpaces));
+                AlertDialog.Builder alertDialog= new AlertDialog.Builder(EditActivity.this);
+                alertDialog.setTitle("Statistics");
+                alertDialog.setMessage(message);
+                alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "TEST");
+
+                    }
+                });
+                alertDialog.show();
+            }
+        });
+
     }
+
+
 
     public boolean save(String id) {
         Date todayDate = Calendar.getInstance().getTime();
