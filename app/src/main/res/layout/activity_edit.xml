@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".EditActivity"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
-    >
+    android:focusableInTouchMode="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/panel">
+
         <ImageButton
             android:id="@+id/backButton"
             android:layout_width="32dp"
@@ -21,7 +21,8 @@
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:tag="Back">
+            android:tag="Back"
+            android:contentDescription="@string/back_button_description">
         </ImageButton>
 
         <ImageButton
@@ -33,7 +34,8 @@
             android:layout_marginRight="10dp"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/delete_icon"/>
+            android:background="@drawable/delete_icon"
+            android:contentDescription="@string/delete_button_description"/>
 
         <ImageButton
             android:id="@+id/infoButton"
@@ -44,7 +46,8 @@
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/info_icon"
-            android:layout_toStartOf="@id/deleteButton" />
+            android:layout_toStartOf="@id/deleteButton"
+            android:contentDescription="@string/info_button_description"/>
 
         <ImageButton
             android:id="@+id/copyButton"
@@ -56,7 +59,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/copy_icon"
-            />
+            android:contentDescription="@string/copy_button_description"/>
 
 
     </RelativeLayout>
@@ -65,8 +68,10 @@
         android:id="@+id/titleEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="3"
+        android:maxLines="1"
         android:hint="@string/title_edit_hint"
+        android:inputType="text"
+        android:autofillHints="@string/title_edit_hint"
         android:textColor="@color/Black"
         android:textStyle="bold"
         android:textSize="28sp"
@@ -86,16 +91,18 @@
         android:layout_marginLeft="10dp">
 
         <EditText
-            android:id="@+id/thoughtEdit"
+            android:id="@+id/noteEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:hint="@string/thought_edit_hint"
+            android:hint="@string/note_edit_hint"
+            android:inputType="textMultiLine"
+            android:autofillHints="@string/note_edit_hint"
             android:textSize="24sp"/>
     </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/createButton"
+        android:id="@+id/writeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

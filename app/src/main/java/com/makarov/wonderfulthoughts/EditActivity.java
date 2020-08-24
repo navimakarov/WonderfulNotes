@@ -2,8 +2,8 @@ package com.makarov.wonderfulthoughts;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
@@ -15,32 +15,24 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
-
 public class EditActivity extends AppCompatActivity {
 
-    private EditText titleEdit, thoughtEdit;
-
-    private FloatingActionButton createButton;
-
-    private ImageButton backButton, deleteButton, infoButton, copyButton, settingsButton;
-
-    private final String TAG = "ERROR";
+    private EditText titleEdit, noteEdit;
+    private FloatingActionButton writeButton;
+    private ImageButton backButton;
 
     private SQLiteDatabase db;
+    private int highlight = 0;
 
 
     @Override
@@ -48,34 +40,36 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
-        Intent intent = getIntent();
-        final String id = intent.getStringExtra("id");
+        titleEdit = findViewById(R.id.titleEdit);
+        noteEdit =  findViewById(R.id.noteEdit);
+        backButton = findViewById(R.id.backButton);
+        ImageButton deleteButton = findViewById(R.id.deleteButton);
+        ImageButton infoButton = findViewById(R.id.infoButton);
+        ImageButton copyButton = findViewById(R.id.copyButton);
+        writeButton = findViewById(R.id.writeButton);
 
+        Intent intent = getIntent();
+        final String id;
+        if(intent.hasExtra("id"))
+            id = intent.getStringExtra("id");
+        else
+            id = null;
 
         db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
         db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
-        //db.execSQL("DROP TABLE notes;");
-
-        titleEdit = (EditText) findViewById(R.id.titleEdit);
-        thoughtEdit = (EditText) findViewById(R.id.thoughtEdit);
 
         Cursor query = db.rawQuery("SELECT * FROM notes;", null);
-        if(!id.equals("null") && query.moveToFirst()){
+        if(id != null && query.moveToFirst()){
             while(query.getInt(0) != Integer.parseInt(id)){
                 query.moveToNext();
             }
             titleEdit.setText(query.getString(2));
-            thoughtEdit.setText(query.getString(3));
+            noteEdit.setText(query.getString(3));
+            highlight = query.getInt(4);
             query.close();
         }
 
-        backButton = (ImageButton) findViewById(R.id.backButton);
-        deleteButton = (ImageButton)  findViewById(R.id.deleteButton);
-        infoButton = (ImageButton) findViewById(R.id.infoButton);
-        copyButton = (ImageButton) findViewById(R.id.copyButton);
-        settingsButton = (ImageButton) findViewById(R.id.settingsButton);
-
-        if(id.equals("null")){
+        if(id == null){
             backButton.setBackgroundResource(R.drawable.tick_icon);
             backButton.setTag("Save");
         }
@@ -83,22 +77,22 @@ public class EditActivity extends AppCompatActivity {
         titleEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                createButton.setVisibility(View.VISIBLE);
+                writeButton.setVisibility(View.VISIBLE);
             }
         });
-        thoughtEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        noteEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
-                    createButton.setVisibility(View.INVISIBLE);
+                    writeButton.setVisibility(View.INVISIBLE);
                 }
                 else{
-                    createButton.setVisibility(View.VISIBLE);
+                    writeButton.setVisibility(View.VISIBLE);
                 }
             }
         });
 
-        thoughtEdit.addTextChangedListener(new TextWatcher() {
+        noteEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -134,16 +128,14 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
-
-
-        createButton = (FloatingActionButton) findViewById(R.id.createButton);
-        createButton.setOnClickListener(new View.OnClickListener() {
+        writeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                thoughtEdit.requestFocus();
+                noteEdit.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(thoughtEdit, InputMethodManager.SHOW_IMPLICIT);
-                createButton.setVisibility(View.INVISIBLE);
+                assert imm != null; // TODO check this out
+                imm.showSoftInput(noteEdit, InputMethodManager.SHOW_IMPLICIT);
+                writeButton.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -156,7 +148,7 @@ public class EditActivity extends AppCompatActivity {
                         exit("Cannot save an empty note");
                     }
                     else {
-                        if (id.equals("null"))
+                        if (id == null)
                             exit();
                         else {
                             backButton.setBackgroundResource(R.drawable.back_icon);
@@ -173,11 +165,10 @@ public class EditActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(id.equals("null")){
+                if(id == null){
                     exit();
                 }
                 else{
-                    Log.d(TAG, id);
                     db.delete("notes", "id=" + id, null);
                     exit();
                 }
@@ -187,9 +178,10 @@ public class EditActivity extends AppCompatActivity {
         copyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String note = thoughtEdit.getText().toString();
+                String note = noteEdit.getText().toString();
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("simple text", note);
+                assert clipboard != null; // TODO check it out
                 clipboard.setPrimaryClip(clip);
                 Snackbar.make(v, "Text copied to clipboard", Snackbar.LENGTH_SHORT).show();
             }
@@ -198,16 +190,16 @@ public class EditActivity extends AppCompatActivity {
         infoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String note = thoughtEdit.getText().toString();
-                int lines = note.split(" ").length;
+                String note = noteEdit.getText().toString();
+                int lines = note.split("\n").length;
                 int charsNumber = note.length();
                 int charsNumberWithoutSpaces = note.replace(" ", "").length();
                 int words = note.split("\\s+").length;
 
-                String message = "Lines: " + String.valueOf(lines) + "\n"
-                        + "Words: " + String.valueOf(words) + "\n"
-                        + "Characters (With Spaces): " + String.valueOf(charsNumber) + "\n"
-                        + "Characters (Without Spaces): " + String.valueOf((charsNumberWithoutSpaces));
+                String message = "Lines: " + lines + "\n"
+                        + "Words: " + words + "\n"
+                        + "Characters (With Spaces): " + charsNumber + "\n"
+                        + "Characters (Without Spaces): " + charsNumberWithoutSpaces;
                 AlertDialog.Builder alertDialog= new AlertDialog.Builder(EditActivity.this);
                 alertDialog.setTitle("Statistics");
                 alertDialog.setMessage(message);
@@ -215,7 +207,6 @@ public class EditActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "TEST");
 
                     }
                 });
@@ -229,13 +220,13 @@ public class EditActivity extends AppCompatActivity {
 
     public boolean save(String id) {
         Date todayDate = Calendar.getInstance().getTime();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); // TODO checkout SuppressLint
         String date = formatter.format(todayDate);
         String title = titleEdit.getText().toString();
-        String note = thoughtEdit.getText().toString();
+        String note = noteEdit.getText().toString();
 
         if(title.equals("")) {
-            if(note.equals("") && id.equals("null"))
+            if(note.equals("") && id == null)
                 return false;
             else
                 title = "Untitled note";
@@ -245,10 +236,10 @@ public class EditActivity extends AppCompatActivity {
         cv.put("date", date);
         cv.put("title", title);
         cv.put("note", note);
-        cv.put("highlight", 0);
+        cv.put("highlight", highlight);
 
 
-        if(id.equals("null")){
+        if(id == null){
             db.insert("notes", null, cv);
         }
         else{
@@ -259,16 +250,14 @@ public class EditActivity extends AppCompatActivity {
     }
 
     public void exit() {
-        db.close();
         Intent intent = new Intent(EditActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
     }
 
     public void exit(String error_message){
-        db.close();
         Intent intent = new Intent(EditActivity.this, MainActivity.class);
-        intent.putExtra("error", "Cannot save an empty note");
+        intent.putExtra("error", error_message);
         startActivity(intent);
         finish();
     }

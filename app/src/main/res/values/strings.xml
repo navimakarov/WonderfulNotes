@@ -1,6 +1,13 @@
 <resources>
-    <string name="app_name">Wonderful Thoughts</string>
-    <string name="fab_text">New thought</string>
+    <string name="app_name">Wonderful Notes</string>
+    <string name="fab_text">New Note</string>
     <string name="title_edit_hint">Note Title</string>
-    <string name="thought_edit_hint">Start writing...</string>
+    <string name="note_edit_hint">Start writing…</string>
+
+    <string name="highlight_button_description">Highlight button</string>
+
+    <string name="back_button_description">Back button</string>
+    <string name="copy_button_description">Copy button</string>
+    <string name="info_button_description">Info button</string>
+    <string name="delete_button_description">Delete button</string>
 </resources>

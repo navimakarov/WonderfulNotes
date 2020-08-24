@@ -2,82 +2,59 @@ package com.makarov.wonderfulthoughts;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.PopupWindow;
 import android.widget.Toast;
-
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView thoughtsRecView;
+    private NotesRecViewAdapter adapter;
+    private ArrayList<Note> notes = new ArrayList<>();
 
-    private ExtendedFloatingActionButton newThoughtBtn;
-
-    private static final String TAG = "Program Logs";
     private SQLiteDatabase db;
-
-    private ThoughtsRecViewAdapter adapter;
-    private ArrayList<Thought> notes = new ArrayList<>();
-    private Drawable icon;
+    // TODO icon when no notes found
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        thoughtsRecView = (RecyclerView) findViewById(R.id.thoughtsRecView);
+        RecyclerView notesRecView = findViewById(R.id.notesRecView);
+        ExtendedFloatingActionButton newNoteButton = findViewById(R.id.newNoteButton);
+
+        db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
+        db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
+        read_from_db();
 
         Intent intent = getIntent();
         if(intent.hasExtra("error")) {
             String error = intent.getStringExtra("error");
             Toast.makeText(this, error, Toast.LENGTH_LONG).show();
         }
-
-        db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
-        db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
-        //db.execSQL("DROP TABLE notes;");
-
-        newThoughtBtn = findViewById(R.id.newThoughtBtn);
-        newThoughtBtn.setOnClickListener(new View.OnClickListener() {
+        
+        newNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.close();
                 Intent intent = new Intent(MainActivity.this, EditActivity.class);
-                intent.putExtra("id", "null");
                 startActivity(intent);
                 finish();
             }
         });
 
-        read_from_db(notes);
+        adapter = new NotesRecViewAdapter();
+        adapter.setNotes(notes);
 
-        adapter = new ThoughtsRecViewAdapter();
-        adapter.setThoughts(notes);
-
-        thoughtsRecView.setAdapter(adapter);
-        thoughtsRecView.setLayoutManager(new LinearLayoutManager(this));
+        notesRecView.setAdapter(adapter);
+        notesRecView.setLayoutManager(new LinearLayoutManager(this));
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
@@ -87,17 +64,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                Log.d(TAG, String.valueOf(viewHolder.itemView.getTag()));
                 db.delete("notes", "id=" + viewHolder.itemView.getTag(), null);
-                read_from_db(notes);
+                read_from_db();
                 adapter.notifyItemRemoved(viewHolder.getLayoutPosition());
             }
 
-        }).attachToRecyclerView(thoughtsRecView);
+        }).attachToRecyclerView(notesRecView);
 
     }
 
-    public void read_from_db(ArrayList<Thought> notes) {
+    public void read_from_db() {
         Cursor query = db.rawQuery("SELECT * FROM notes;", null);
 
         notes.clear();
@@ -106,14 +82,14 @@ public class MainActivity extends AppCompatActivity {
                 int id = query.getInt(0);
                 String date = query.getString(1);
                 String title = query.getString(2);
-                String note = query.getString(3);
+                String text = query.getString(3);
                 int highlight = query.getInt(4);
 
-                Thought thought = new Thought(date, title, note, id);
+                Note note = new Note(date, title, text, id);
                 if(highlight == 1){
-                    thought.highlight();
+                    note.highlight();
                 }
-                notes.add(thought);
+                notes.add(note);
             }
             while(query.moveToNext());
         }

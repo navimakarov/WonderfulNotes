@@ -1,5 +1,6 @@
 package com.makarov.wonderfulthoughts;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
@@ -7,37 +8,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 
-public class ThoughtsRecViewAdapter extends RecyclerView.Adapter<ThoughtsRecViewAdapter.ViewHolder> {
+public class NotesRecViewAdapter extends RecyclerView.Adapter<NotesRecViewAdapter.ViewHolder> {
 
-    private ArrayList <Thought> thoughts = new ArrayList<>();
+    private ArrayList <Note> notes = new ArrayList<>();
     private SQLiteDatabase db;
-
-    public ThoughtsRecViewAdapter(){
-
-    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.thoughts_list_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_list_item, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.date.setText(thoughts.get(position).getDate());
-        holder.name.setText(thoughts.get(position).getName());
-        holder.text.setText(thoughts.get(position).getText());
+        holder.date.setText(notes.get(position).getDate());
+        holder.title.setText(notes.get(position).getTitle());
+        holder.text.setText(notes.get(position).getText());
 
-        if(thoughts.get(position).highlighted()){
+        if(notes.get(position).highlighted()){
             holder.highlight.setTag("active");
             holder.highlight.setBackgroundResource(R.drawable.star_active_icon);
         }
@@ -45,27 +38,27 @@ public class ThoughtsRecViewAdapter extends RecyclerView.Adapter<ThoughtsRecView
             holder.highlight.setTag("inactive");
             holder.highlight.setBackgroundResource(R.drawable.star_inactive_icon);
         }
-        holder.itemView.setTag(thoughts.get(position).getId());
+        holder.itemView.setTag(notes.get(position).getId());
     }
 
     @Override
     public int getItemCount() {
-        return thoughts.size();
+        return notes.size();
     }
 
-    public void setThoughts(ArrayList<Thought> thoughts) {
-        this.thoughts = thoughts;
+    void setNotes(ArrayList<Note> notes) {
+        this.notes = notes;
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView date, name, text;
+        private TextView date, title, text;
         private ImageButton highlight;
-        public ViewHolder(@NonNull final View itemView) {
+        ViewHolder(@NonNull final View itemView) {
             super(itemView);
             date = itemView.findViewById(R.id.date);
-            name = itemView.findViewById(R.id.name);
+            title = itemView.findViewById(R.id.title);
             text = itemView.findViewById(R.id.text);
             highlight = itemView.findViewById(R.id.highlight);
 
@@ -75,7 +68,8 @@ public class ThoughtsRecViewAdapter extends RecyclerView.Adapter<ThoughtsRecView
                     String tag = highlight.getTag().toString();
                     String id = itemView.getTag().toString();
 
-                    db = v.getContext().openOrCreateDatabase("notes.db", v.getContext().MODE_PRIVATE, null);
+                    v.getContext();
+                    db = v.getContext().openOrCreateDatabase("notes.db", Context.MODE_PRIVATE, null);
                     db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
 
                     if(tag.equals("inactive")){
