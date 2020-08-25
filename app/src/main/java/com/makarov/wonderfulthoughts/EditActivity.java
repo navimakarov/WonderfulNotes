@@ -73,13 +73,7 @@ public class EditActivity extends AppCompatActivity {
             backButton.setBackgroundResource(R.drawable.tick_icon);
             backButton.setTag("Save");
         }
-
-        titleEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                writeButton.setVisibility(View.VISIBLE);
-            }
-        });
+        
         noteEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

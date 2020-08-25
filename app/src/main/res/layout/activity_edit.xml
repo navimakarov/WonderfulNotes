@@ -31,9 +31,9 @@
             android:layout_height="32dp"
             android:layout_alignParentRight="true"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="16dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/delete_icon"
             android:contentDescription="@string/delete_button_description"/>
 
@@ -70,8 +70,8 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:hint="@string/title_edit_hint"
+        android:importantForAutofill="no"
         android:inputType="text"
-        android:autofillHints="@string/title_edit_hint"
         android:textColor="@color/Black"
         android:textStyle="bold"
         android:textSize="28sp"
@@ -97,7 +97,7 @@
             android:background="@null"
             android:hint="@string/note_edit_hint"
             android:inputType="textMultiLine"
-            android:autofillHints="@string/note_edit_hint"
+            android:importantForAutofill="no"
             android:textSize="24sp"/>
     </ScrollView>
 
