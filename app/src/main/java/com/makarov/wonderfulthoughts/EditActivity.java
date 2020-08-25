@@ -165,13 +165,10 @@ public class EditActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(id == null){
-                    exit();
-                }
-                else{
+                if (id != null) {
                     db.delete("notes", "id=" + id, null);
-                    exit();
                 }
+                exit();
             }
         });
 
