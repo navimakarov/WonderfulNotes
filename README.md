@@ -1,4 +1,14 @@
 # WonderfulNotes
+#### Description
+A simple application for taking notes and managing daily tasks.
+ <br>
+ <br>
+ :white_check_mark: Creating/Editing/Removing notes
+ <br>
+ :white_check_mark: Highlight option
+ <br>
+ :white_check_mark: Simple User Interface
+ <br>
 #### App Screenshots
 <table>
   <tr>
