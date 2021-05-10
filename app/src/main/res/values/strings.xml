@@ -10,4 +10,10 @@
     <string name="copy_button_description">Copy button</string>
     <string name="info_button_description">Info button</string>
     <string name="delete_button_description">Delete button</string>
+
+    <string name="home_item">Home</string>
+    <string name="import_item">Import</string>
+    <string name="export_item">Export</string>
+    <string name="settings_item">Settings</string>
+    <string name="about_item">About</string>
 </resources>
