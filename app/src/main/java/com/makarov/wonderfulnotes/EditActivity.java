@@ -1,4 +1,4 @@
-package com.makarov.wonderfulthoughts;
+package com.makarov.wonderfulnotes;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +21,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.makarov.wonderfulnotes.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;

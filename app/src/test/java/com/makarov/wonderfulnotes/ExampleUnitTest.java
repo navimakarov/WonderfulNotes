@@ -1,4 +1,4 @@
-package com.makarov.wonderfulthoughts;
+package com.makarov.wonderfulnotes;
 
 import org.junit.Test;
 

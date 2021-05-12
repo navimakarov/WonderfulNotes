@@ -1,4 +1,4 @@
-package com.makarov.wonderfulthoughts;
+package com.makarov.wonderfulnotes;
 
 class Note {
     private String date, title, text;

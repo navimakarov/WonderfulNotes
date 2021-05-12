@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group
-        android:id="@+id/general_group"
-        android:checkableBehavior="single">
 
         <item
             android:id="@+id/home_item"
@@ -13,7 +10,7 @@
             android:id="@+id/import_item"
             android:title="@string/import_item"
             android:checked="true"
-            android:icon="@drawable/import_menu_icon"/>
+            android:icon="@drawable/import_menu_icon" />
         <item
             android:id="@+id/export_item"
             android:title="@string/export_item"
@@ -31,6 +28,5 @@
             android:checked="true"
             android:icon="@drawable/info_menu_icon"/>
 
-    </group>
 
 </menu>

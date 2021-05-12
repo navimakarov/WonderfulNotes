@@ -1,4 +1,4 @@
-package com.makarov.wonderfulthoughts;
+package com.makarov.wonderfulnotes;
 
 import android.content.Context;
 

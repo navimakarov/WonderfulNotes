@@ -1,4 +1,4 @@
-package com.makarov.wonderfulthoughts;
+package com.makarov.wonderfulnotes;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.makarov.wonderfulnotes.R;
+
 import java.util.ArrayList;
 
 public class NotesRecViewAdapter extends RecyclerView.Adapter<NotesRecViewAdapter.ViewHolder> {

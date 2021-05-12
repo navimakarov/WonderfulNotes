@@ -5,14 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawerLayout"
-    tools:context=".MainActivity">
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationView"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:menu="@menu/navigation_drawer"
-        android:layout_gravity="start"/>
+    tools:context="com.makarov.wonderfulnotes.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,11 +41,10 @@
                 android:layout_marginLeft="15dp"
                 android:text="@string/app_name"
                 android:textColor="@color/White"
-                android:textSize="21sp"/>
+                android:textSize="18sp"/>
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -68,7 +60,8 @@
         android:textAllCaps="true"
         android:textColor="@color/White"
         app:icon="@drawable/plus_sign_icon"
-        app:iconTint="@color/White" />
+        app:iconTint="@color/White"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_margin="16dp"
@@ -78,4 +71,10 @@
 
 </RelativeLayout>
     </LinearLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:menu="@menu/navigation_drawer"
+        android:layout_gravity="start"/>
 </androidx.drawerlayout.widget.DrawerLayout>
