@@ -1,7 +1,5 @@
 package com.makarov.wonderfulnotes;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ClipData;
@@ -9,26 +7,35 @@ import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.makarov.wonderfulnotes.R;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class EditActivity extends AppCompatActivity {
+import static android.content.Context.MODE_PRIVATE;
 
+public class EditFragment extends Fragment {
     private EditText titleEdit, noteEdit;
     private FloatingActionButton writeButton;
     private ImageButton backButton;
@@ -36,28 +43,28 @@ public class EditActivity extends AppCompatActivity {
     private SQLiteDatabase db;
     private int highlight = 0;
 
-
+    @Nullable
+    @org.jetbrains.annotations.Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
+    public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_edit, container, false);
+        titleEdit = root.findViewById(R.id.titleEdit);
+        noteEdit =  root.findViewById(R.id.noteEdit);
+        backButton = root.findViewById(R.id.backButton);
+        ImageButton deleteButton = root.findViewById(R.id.deleteButton);
+        ImageButton infoButton = root.findViewById(R.id.infoButton);
+        ImageButton copyButton = root.findViewById(R.id.copyButton);
+        writeButton = root.findViewById(R.id.writeButton);
 
-        titleEdit = findViewById(R.id.titleEdit);
-        noteEdit =  findViewById(R.id.noteEdit);
-        backButton = findViewById(R.id.backButton);
-        ImageButton deleteButton = findViewById(R.id.deleteButton);
-        ImageButton infoButton = findViewById(R.id.infoButton);
-        ImageButton copyButton = findViewById(R.id.copyButton);
-        writeButton = findViewById(R.id.writeButton);
-
-        Intent intent = getIntent();
+        Bundle arguments = getArguments();
         final String id;
-        if(intent.hasExtra("id"))
-            id = intent.getStringExtra("id");
-        else
+        if(arguments != null && arguments.containsKey("id")) {
+            id = getArguments().getString("id", null);
+        }
+        else {
             id = null;
-
-        db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
+        }
+        db = getActivity().getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
         db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
 
         Cursor query = db.rawQuery("SELECT * FROM notes;", null);
@@ -75,7 +82,7 @@ public class EditActivity extends AppCompatActivity {
             backButton.setBackgroundResource(R.drawable.tick_icon);
             backButton.setTag("Save");
         }
-        
+
         noteEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -128,7 +135,7 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 noteEdit.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 assert imm != null;
                 imm.showSoftInput(noteEdit, InputMethodManager.SHOW_IMPLICIT);
                 writeButton.setVisibility(View.INVISIBLE);
@@ -173,7 +180,7 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String note = noteEdit.getText().toString();
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("simple text", note);
                 assert clipboard != null;
                 clipboard.setPrimaryClip(clip);
@@ -194,7 +201,7 @@ public class EditActivity extends AppCompatActivity {
                         + "Words: " + words + "\n"
                         + "Characters (With Spaces): " + charsNumber + "\n"
                         + "Characters (Without Spaces): " + charsNumberWithoutSpaces;
-                AlertDialog.Builder alertDialog= new AlertDialog.Builder(EditActivity.this);
+                AlertDialog.Builder alertDialog= new AlertDialog.Builder(getContext());
                 alertDialog.setTitle("Statistics");
                 alertDialog.setMessage(message);
                 alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -208,9 +215,8 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+        return root;
     }
-
-
 
     public boolean save(String id) {
         Date todayDate = Calendar.getInstance().getTime();
@@ -244,16 +250,23 @@ public class EditActivity extends AppCompatActivity {
     }
 
     public void exit() {
-        Intent intent = new Intent(EditActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        hide_keyboard();
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new HomeFragment()).commit();
     }
 
     public void exit(String error_message){
-        Intent intent = new Intent(EditActivity.this, MainActivity.class);
-        intent.putExtra("error", error_message);
-        startActivity(intent);
-        finish();
+        hide_keyboard();
+        Fragment homeFragment = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putString("error", error_message);
+        homeFragment.setArguments(args);
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
     }
 
+    private void hide_keyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        assert imm != null;
+        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+    }
 }

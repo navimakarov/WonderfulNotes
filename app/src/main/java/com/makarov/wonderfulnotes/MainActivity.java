@@ -93,12 +93,6 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        Intent intent = getIntent();
-        if (intent.hasExtra("error")) {
-            String error = intent.getStringExtra("error");
-            showError(error);
-        }
-
         if(savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new HomeFragment()).commit();
@@ -172,9 +166,8 @@ public class MainActivity extends AppCompatActivity{
                 File currentDB = new File(data, currentDBPath);
                 copyInputStreamToFile(inputStream, currentDB);
 
-                //TODO
-                //read_from_db();
-                //adapter.notifyDataSetChanged();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new HomeFragment()).commit(); // update data
 
                 Snackbar importDoneSnackbar = Snackbar.make(drawerLayout, "Imported notes", Snackbar.LENGTH_LONG);
                 importDoneSnackbar.setTextColor(Color.YELLOW);

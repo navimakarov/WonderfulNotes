@@ -3,12 +3,15 @@ package com.makarov.wonderfulnotes;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makarov.wonderfulnotes.R;
@@ -92,13 +95,18 @@ public class NotesRecViewAdapter extends RecyclerView.Adapter<NotesRecViewAdapte
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), EditActivity.class);
-                    intent.putExtra("id", itemView.getTag().toString());
-                    v.getContext().startActivity(intent);
+                    AppCompatActivity activity = (AppCompatActivity) itemView.getContext();
+                    Fragment editFragment = new EditFragment();
+                    Bundle args = new Bundle();
+                    args.putString("id", itemView.getTag().toString());
+                    editFragment.setArguments(args);
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, editFragment).commit();
                 }
             });
 
+
         }
+
 
     }
 }

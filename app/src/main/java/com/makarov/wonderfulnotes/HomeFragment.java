@@ -3,6 +3,7 @@ package com.makarov.wonderfulnotes;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,8 +48,8 @@ public class HomeFragment extends Fragment {
         newNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), EditActivity.class);
-                startActivity(intent);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new EditFragment()).commit();
             }
         });
 
@@ -71,6 +73,15 @@ public class HomeFragment extends Fragment {
             }
 
         }).attachToRecyclerView(notesRecView);
+
+
+        Bundle arguments = getArguments();
+        if(arguments != null && arguments.containsKey("error")) {
+            String error = getArguments().getString("error", null);
+            Snackbar errorSnackBar = Snackbar.make(getActivity().findViewById(R.id.drawerLayout), error, Snackbar.LENGTH_LONG);
+            errorSnackBar.setTextColor(Color.RED);
+            errorSnackBar.show();
+        }
 
         return root;
     }
