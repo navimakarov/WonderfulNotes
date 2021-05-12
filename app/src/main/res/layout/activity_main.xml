@@ -12,9 +12,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
         <LinearLayout
             android:id="@+id/layoutToolBar"
             android:layout_width="match_parent"
@@ -44,32 +41,11 @@
                 android:textSize="18sp"/>
 
         </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/newNoteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"
-        android:text="@string/fab_text"
-        android:textAllCaps="true"
-        android:textColor="@color/White"
-        app:icon="@drawable/plus_sign_icon"
-        app:iconTint="@color/White"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_margin="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/notesRecView"/>
-
-</RelativeLayout>
     </LinearLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"

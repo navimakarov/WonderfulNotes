@@ -4,8 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -13,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,11 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -42,22 +35,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity{
 
-    private NotesRecViewAdapter adapter;
-    private ArrayList<Note> notes = new ArrayList<>();
-
     private static final int STORAGE_PERMISSION_CODE = 0;
-
-    private SQLiteDatabase db;
     private DrawerLayout drawerLayout;
     // TODO icon when no notes found
     // TODO add logs
     // TODO ask for storage permission
+    // TODO fix import/export
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +60,15 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.home:
+                    case R.id.home_item:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new HomeFragment()).commit();
                         break;
                     case R.id.import_item:
                         importDB();
                         break;
                     case R.id.export_item:
-                        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, STORAGE_PERMISSION_CODE);
+                        checkPermission();
                         // Grant access and export database if access is granted
                         break;
                     case R.id.cloud_item:
@@ -89,7 +78,8 @@ public class MainActivity extends AppCompatActivity{
                         //TODO
                         break;
                     case R.id.about_item:
-                        //TODO
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new AboutFragment()).commit();
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
@@ -102,83 +92,29 @@ public class MainActivity extends AppCompatActivity{
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
-        RecyclerView notesRecView = findViewById(R.id.notesRecView);
-        ExtendedFloatingActionButton newNoteButton = findViewById(R.id.newNoteButton);
-
-        db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
-        db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
-        read_from_db();
 
         Intent intent = getIntent();
         if (intent.hasExtra("error")) {
             String error = intent.getStringExtra("error");
-            Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+            showError(error);
         }
 
-        newNoteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, EditActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+        if(savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new HomeFragment()).commit();
+            navigationView.setCheckedItem(R.id.home_item);
+        }
 
-        adapter = new NotesRecViewAdapter();
-        adapter.setNotes(notes);
-
-        notesRecView.setAdapter(adapter);
-        notesRecView.setLayoutManager(new LinearLayoutManager(this));
-
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                db.delete("notes", "id=" + viewHolder.itemView.getTag(), null);
-                read_from_db();
-                adapter.notifyItemRemoved(viewHolder.getLayoutPosition());
-            }
-
-        }).attachToRecyclerView(notesRecView);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 0 && resultCode == RESULT_OK) {
-            assert data != null;
-            Uri selectedFile = data.getData();
-            assert selectedFile != null;
-            openDB_from_file(selectedFile);
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         }
-    }
-
-    private void read_from_db() {
-        Cursor query = db.rawQuery("SELECT * FROM notes;", null);
-
-        notes.clear();
-        if(query.moveToFirst()){
-            do{
-                int id = query.getInt(0);
-                String date = query.getString(1);
-                String title = query.getString(2);
-                String text = query.getString(3);
-                int highlight = query.getInt(4);
-
-                Note note = new Note(date, title, text, id);
-                if(highlight == 1){
-                    note.highlight();
-                }
-                notes.add(note);
-            }
-            while(query.moveToNext());
+        else{
+            super.onBackPressed();
         }
-        Collections.reverse(notes);
-        query.close();
     }
 
     public void exportDB() {
@@ -189,7 +125,6 @@ public class MainActivity extends AppCompatActivity{
             String  currentDBPath= "//data//" + "com.makarov.wonderfulnotes"
                     + "//databases//" + "notes.db";
             @SuppressLint("SimpleDateFormat") String backupDBName = new SimpleDateFormat("ddMMyyHHmmss").format(new Date());
-            backupDBName = "notes";
             String backupDBPath  = "//WonderfulNotes//" + backupDBName + ".db";
             File currentDB = new File(data, currentDBPath);
             File backupDB = new File(sd, backupDBPath);
@@ -236,8 +171,10 @@ public class MainActivity extends AppCompatActivity{
                         + "//databases//" + "notes.db";
                 File currentDB = new File(data, currentDBPath);
                 copyInputStreamToFile(inputStream, currentDB);
-                read_from_db();
-                adapter.notifyDataSetChanged();
+
+                //TODO
+                //read_from_db();
+                //adapter.notifyDataSetChanged();
 
                 Snackbar importDoneSnackbar = Snackbar.make(drawerLayout, "Imported notes", Snackbar.LENGTH_LONG);
                 importDoneSnackbar.setTextColor(Color.YELLOW);
@@ -295,10 +232,10 @@ public class MainActivity extends AppCompatActivity{
         error.show();
     }
 
-    private void checkPermission(String permission, int requestCode)
+    private void checkPermission()
     {
-        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[] { permission }, requestCode);
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, MainActivity.STORAGE_PERMISSION_CODE);
         }
         else {
             exportDB();
@@ -317,12 +254,13 @@ public class MainActivity extends AppCompatActivity{
     }
 
     @Override
-    public void onBackPressed() {
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }
-        else{
-            super.onBackPressed();
+    public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 0 && resultCode == RESULT_OK) {
+            assert data != null;
+            Uri selectedFile = data.getData();
+            assert selectedFile != null;
+            openDB_from_file(selectedFile);
         }
     }
 }

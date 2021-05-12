@@ -129,7 +129,7 @@ public class EditActivity extends AppCompatActivity {
             public void onClick(View v) {
                 noteEdit.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                assert imm != null; // TODO check this out
+                assert imm != null;
                 imm.showSoftInput(noteEdit, InputMethodManager.SHOW_IMPLICIT);
                 writeButton.setVisibility(View.INVISIBLE);
             }
@@ -161,6 +161,7 @@ public class EditActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // TODO add do you want to delete?
                 if (id != null) {
                     db.delete("notes", "id=" + id, null);
                 }
@@ -174,7 +175,7 @@ public class EditActivity extends AppCompatActivity {
                 String note = noteEdit.getText().toString();
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("simple text", note);
-                assert clipboard != null; // TODO check it out
+                assert clipboard != null;
                 clipboard.setPrimaryClip(clip);
                 Snackbar.make(v, "Text copied to clipboard", Snackbar.LENGTH_SHORT).show();
             }
@@ -213,7 +214,7 @@ public class EditActivity extends AppCompatActivity {
 
     public boolean save(String id) {
         Date todayDate = Calendar.getInstance().getTime();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); // TODO checkout SuppressLint
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String date = formatter.format(todayDate);
         String title = titleEdit.getText().toString();
         String note = noteEdit.getText().toString();
