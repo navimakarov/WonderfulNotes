@@ -28,6 +28,4 @@
         app:iconSize="18dp"
         app:backgroundTint="@color/Orange" />
 
-
-
 </LinearLayout>

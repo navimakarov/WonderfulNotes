@@ -1,7 +1,9 @@
 package com.makarov.wonderfulnotes;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -17,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -47,6 +51,8 @@ public class MainActivity extends AppCompatActivity{
     private NotesRecViewAdapter adapter;
     private ArrayList<Note> notes = new ArrayList<>();
 
+    private static final int STORAGE_PERMISSION_CODE = 0;
+
     private SQLiteDatabase db;
     private DrawerLayout drawerLayout;
     // TODO icon when no notes found
@@ -73,7 +79,8 @@ public class MainActivity extends AppCompatActivity{
                         importDB();
                         break;
                     case R.id.export_item:
-                        exportDB();
+                        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, STORAGE_PERMISSION_CODE);
+                        // Grant access and export database if access is granted
                         break;
                     case R.id.cloud_item:
                         break;
@@ -181,7 +188,8 @@ public class MainActivity extends AppCompatActivity{
             File data = Environment.getDataDirectory();
             String  currentDBPath= "//data//" + "com.makarov.wonderfulnotes"
                     + "//databases//" + "notes.db";
-            @SuppressLint("SimpleDateFormat") String backupDBName = new SimpleDateFormat("dd-MM-yy_HH:mm:ss").format(new Date());
+            @SuppressLint("SimpleDateFormat") String backupDBName = new SimpleDateFormat("ddMMyyHHmmss").format(new Date());
+            backupDBName = "notes";
             String backupDBPath  = "//WonderfulNotes//" + backupDBName + ".db";
             File currentDB = new File(data, currentDBPath);
             File backupDB = new File(sd, backupDBPath);
@@ -285,5 +293,26 @@ public class MainActivity extends AppCompatActivity{
         });
         error.setTextColor(Color.RED);
         error.show();
+    }
+
+    private void checkPermission(String permission, int requestCode)
+    {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] { permission }, requestCode);
+        }
+        else {
+            exportDB();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                exportDB();
+            } else {
+                showError("Access to Storage was not granted");
+            }
+        }
     }
 }
