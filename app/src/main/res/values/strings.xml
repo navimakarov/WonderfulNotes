@@ -14,6 +14,10 @@
     <string name="home_item">Home</string>
     <string name="import_item">Import</string>
     <string name="export_item">Export</string>
+    <string name="cloud_item">Cloud</string>
+    <string name="others_item">Others</string>
     <string name="settings_item">Settings</string>
     <string name="about_item">About</string>
+
+    <string name="welcome">Welcome!</string>
 </resources>

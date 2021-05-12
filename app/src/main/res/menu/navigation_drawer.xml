@@ -4,29 +4,35 @@
         <item
             android:id="@+id/home_item"
             android:title="@string/home_item"
-            android:checked="true"
             android:icon="@drawable/home_menu_icon"/>
         <item
             android:id="@+id/import_item"
             android:title="@string/import_item"
-            android:checked="true"
             android:icon="@drawable/import_menu_icon" />
         <item
             android:id="@+id/export_item"
             android:title="@string/export_item"
-            android:checked="true"
             android:icon="@drawable/export_menu_icon"/>
+
+        <item
+            android:id="@+id/cloud_item"
+            android:title="@string/cloud_item"
+            android:icon="@drawable/cloud_menu_icon"/>
+
+
+        <item
+            android:title="@string/others_item">
+                <menu>
         <item
             android:id="@+id/settings_item"
             android:title="@string/settings_item"
-            android:checked="true"
             android:icon="@drawable/settings_menu_icon"/>
 
         <item
             android:id="@+id/about_item"
             android:title="@string/about_item"
-            android:checked="true"
             android:icon="@drawable/info_menu_icon"/>
-
+                </menu>
+        </item>
 
 </menu>

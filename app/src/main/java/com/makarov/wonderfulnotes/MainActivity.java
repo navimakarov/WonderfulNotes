@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity{
     private DrawerLayout drawerLayout;
     // TODO icon when no notes found
     // TODO add logs
+    // TODO ask for storage permission
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,9 @@ public class MainActivity extends AppCompatActivity{
                     case R.id.export_item:
                         exportDB();
                         break;
+                    case R.id.cloud_item:
+                        break;
+                        //TODO
                     case R.id.settings_item:
                         //TODO
                         break;
