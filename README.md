@@ -1,14 +1,14 @@
 # WonderfulNotes
 #### Description
 A simple application for taking notes and managing daily tasks.
- <br>
- <br>
+#### Features available
  :white_check_mark: Creating/Editing/Removing notes
  <br>
  :white_check_mark: Highlight option
  <br>
- :white_check_mark: Simple User Interface
+ :white_check_mark: Database Export/Import
  <br>
+ :white_check_mark: Simple User Interface
 #### App Screenshots
 <table>
   <tr>
@@ -27,7 +27,7 @@ A simple application for taking notes and managing daily tasks.
      <td>Create a note</td>
   </tr>
   <tr>
-    <td><img src="screenshots/removeNote.jpg" width=270 height=480></td>
+    <td><img src="screenshots/remove.jpg" width=270 height=480></td>
     <td><img src="screenshots/edit.jpg" width=270 height=480></td>
   </tr>
  </table>
@@ -62,3 +62,15 @@ A simple application for taking notes and managing daily tasks.
     <td><img src="screenshots/database.jpg" width=270 height=480></td>
   </tr>
  </table>
+
+#### TODO
+:small_red_triangle_down:: FireBase accounts
+<br>
+:small_red_triangle_down: Login page
+<br>
+:small_red_triangle_down: Custom openFileDialog
+<br>
+:small_red_triangle_down: FireBase database import/export
+<br>
+:small_red_triangle_down: About and Settings fragments 
+<br>
