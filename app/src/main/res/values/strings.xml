@@ -20,4 +20,7 @@
     <string name="about_item">About</string>
 
     <string name="welcome">Welcome!</string>
+
+    <string name="email">Email</string>
+    <string name="password">Password</string>
 </resources>

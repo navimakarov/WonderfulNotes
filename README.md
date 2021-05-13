@@ -13,15 +13,37 @@ A simple application for taking notes and managing daily tasks.
 <table>
   <tr>
     <td>First Screen Page</td>
-     <td>Edit page</td>
+     <td>Menu page</td>
   </tr>
   <tr>
     <td><img src="screenshots/firstScreen.jpg" width=270 height=480></td>
+    <td><img src="screenshots/navigationView.jpg" width=270 height=480></td>
+  </tr>
+ </table>
+  
+<table>
+  <tr>
+    <td>Remove a note</td>
+     <td>Create a note</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/removeNote.jpg" width=270 height=480></td>
     <td><img src="screenshots/edit.jpg" width=270 height=480></td>
   </tr>
  </table>
 
-<table>
+ <table>
+  <tr>
+    <td>Ask permission</td>
+     <td>Export database</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/sdCardAccess.jpg" width=270 height=480></td>
+    <td><img src="screenshots/exportCompleted.jpg" width=270 height=480></td>
+  </tr>
+ </table>
+
+ <table>
    <tr>
      <td>Horizontal View</td>
   </tr>
@@ -29,14 +51,14 @@ A simple application for taking notes and managing daily tasks.
     <td><img src="screenshots/horizontalView.jpg" width=567 height=270></td>
   </tr>
  </table>
-  
-<table>
+
+ <table>
   <tr>
-    <td>Remove a note</td>
-     <td>Statistics</td>
+    <td>Error</td>
+     <td>Database folder</td>
   </tr>
   <tr>
-    <td><img src="screenshots/removeNote.jpg" width=270 height=480></td>
-    <td><img src="screenshots/statistics.jpg" width=270 height=480></td>
+    <td><img src="screenshots/error.jpg" width=270 height=480></td>
+    <td><img src="screenshots/database.jpg" width=270 height=480></td>
   </tr>
  </table>

@@ -16,7 +16,7 @@ public class AboutFragment extends Fragment {
     @org.jetbrains.annotations.Nullable
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_about, container, false);
+        View root = inflater.inflate(R.layout.fragment_login, container, false);
         return root;
     }
 }
