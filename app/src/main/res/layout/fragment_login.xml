@@ -3,18 +3,18 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/tools"
     android:background="#727272">
 
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
     <RelativeLayout
         android:id="@+id/card_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_centerInParent="true">
+        android:layout_marginRight="24dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_login"
@@ -26,7 +26,6 @@
             card_view:cardCornerRadius="4dp"
             card_view:cardElevation="0dp"
             card_view:cardUseCompatPadding="false">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -35,32 +34,43 @@
                 android:padding="24dp">
 
                 <EditText
-                    android:drawableLeft="@drawable/delete_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Login"/>
+                    android:hint="@string/email"
+                    android:drawableStart="@drawable/login_icon"
+                    android:drawableLeft="@drawable/login_icon" />
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="Password"
-                    android:inputType="textPassword"/>
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:drawableStart="@drawable/password_icon"
+                    android:drawableLeft="@drawable/password_icon"/>
 
-                <Button
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/forgot_password"
+                    android:textColor="@color/colorAccent"/>
+
+                <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Sign In"
-                    android:background="@android:color/holo_orange_light" />
+                    android:text="@string/login"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/White"/>
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Sign up"
-                    android:background="@android:color/holo_orange_light"/>
-
+                    android:text="@string/register"
+                    android:background="@color/Orange"
+                    android:textColor="@color/White"
+                    />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -71,4 +81,5 @@
             android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

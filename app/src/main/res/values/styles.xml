@@ -8,4 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="RegisterButton">
+        <item name="android:background">@color/Orange</item>
+    </style>
+
 </resources>
