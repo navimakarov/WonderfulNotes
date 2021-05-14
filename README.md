@@ -54,11 +54,11 @@ A simple application for taking notes and managing daily tasks.
 
  <table>
   <tr>
-    <td>Error</td>
+    <td>Sign up</td>
      <td>Database folder</td>
   </tr>
   <tr>
-    <td><img src="screenshots/error.jpg" width=270 height=480></td>
+    <td><img src="screenshots/sign up.jpg" width=270 height=480></td>
     <td><img src="screenshots/database.jpg" width=270 height=480></td>
   </tr>
  </table>
