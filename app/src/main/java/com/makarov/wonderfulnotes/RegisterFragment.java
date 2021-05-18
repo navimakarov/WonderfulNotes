@@ -11,6 +11,8 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -88,8 +90,11 @@ public class RegisterFragment extends Fragment {
                                     errorSnackBar.setTextColor(Color.RED);
                                     errorSnackBar.show();
                                 } else {
-                                    Snackbar successSnackBar = Snackbar.make(getActivity().findViewById(R.id.drawerLayout), "Authentication completed.", Snackbar.LENGTH_LONG);
-                                    successSnackBar.show();
+                                    getActivity().recreate();
+                                    getActivity().getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.fragment_container, new HomeFragment()).commit();
+                                    DrawerLayout dl = getActivity().findViewById(R.id.drawerLayout);
+                                    dl.openDrawer(GravityCompat.START);
                                 }
                             }
                         });

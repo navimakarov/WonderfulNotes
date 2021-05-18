@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity{
 
     private static final int STORAGE_PERMISSION_CODE = 0;
     private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private  FirebaseAuth auth;
     // TODO icon when no notes found
     // TODO add logs
     // TODO ask for storage permission
@@ -53,8 +55,10 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        auth = FirebaseAuth.getInstance();
+
         drawerLayout = findViewById(R.id.drawerLayout);
-        NavigationView navigationView = findViewById(R.id.navigationView);
+        navigationView = findViewById(R.id.navigationView);
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressLint("NonConstantResourceId")
@@ -101,6 +105,18 @@ public class MainActivity extends AppCompatActivity{
             navigationView.setCheckedItem(R.id.home_item);
         }
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        navigationView.removeHeaderView(navigationView.getHeaderView(0));
+        if (auth.getCurrentUser() != null) {
+            navigationView.inflateHeaderView(R.layout.layout_navigation_header_signed_in);
+        }
+        else {
+            navigationView.inflateHeaderView(R.layout.layout_navigation_header);
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.makarov.wonderfulnotes;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,6 +12,8 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -81,8 +84,11 @@ public class LoginFragment extends Fragment {
                                     errorSnackBar.setTextColor(Color.RED);
                                     errorSnackBar.show();
                                 } else {
-                                    Snackbar successSnackBar = Snackbar.make(getActivity().findViewById(R.id.drawerLayout), "Login completed.", Snackbar.LENGTH_LONG);
-                                    successSnackBar.show();
+                                    getActivity().recreate();
+                                    getActivity().getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.fragment_container, new HomeFragment()).commit();
+                                    DrawerLayout dl = getActivity().findViewById(R.id.drawerLayout);
+                                    dl.openDrawer(GravityCompat.START);
                                 }
                             }
                         });
