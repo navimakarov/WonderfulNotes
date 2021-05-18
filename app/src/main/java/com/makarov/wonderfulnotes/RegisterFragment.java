@@ -66,7 +66,6 @@ public class RegisterFragment extends Fragment {
                     return;
                 }
 
-                //create user with email/password by adding complete listener
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                             @Override

@@ -34,6 +34,7 @@
                 android:padding="24dp">
 
                 <EditText
+                    android:id="@+id/emailLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/email"
@@ -41,6 +42,7 @@
                     android:drawableLeft="@drawable/login_icon" />
 
                 <EditText
+                    android:id="@+id/passwordLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
