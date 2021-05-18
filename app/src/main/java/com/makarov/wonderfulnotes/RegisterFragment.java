@@ -22,6 +22,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+// TODO add error textfields instead of snackbars
 public class RegisterFragment extends Fragment {
     @Nullable
     @org.jetbrains.annotations.Nullable
@@ -41,6 +45,16 @@ public class RegisterFragment extends Fragment {
                 String password = passwordEdit.getText().toString().trim();
                 String user = usernameEdit.getText().toString().trim();
 
+                String regex = "^(.+)@(.+)$";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(email);
+
+                if(!matcher.matches()) {
+                    Snackbar errorSnackBar = Snackbar.make(getActivity().findViewById(R.id.drawerLayout), "Incorrect email!", Snackbar.LENGTH_LONG);
+                    errorSnackBar.setTextColor(Color.RED);
+                    errorSnackBar.show();
+                    return;
+                }
                 if (TextUtils.isEmpty(user)) {
                     Snackbar errorSnackBar = Snackbar.make(getActivity().findViewById(R.id.drawerLayout), "Enter username!", Snackbar.LENGTH_LONG);
                     errorSnackBar.setTextColor(Color.RED);
