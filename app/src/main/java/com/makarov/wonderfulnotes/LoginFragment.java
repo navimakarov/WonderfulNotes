@@ -18,7 +18,15 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_login, container, false);
-        AppCompatButton register = root.findViewById(R.id.registerButton);
+        AppCompatButton login = root.findViewById(R.id.loginButton);
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        AppCompatButton register = root.findViewById(R.id.registerFragmentButton);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

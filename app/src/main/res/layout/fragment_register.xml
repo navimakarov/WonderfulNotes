@@ -34,6 +34,7 @@
                     android:padding="24dp">
 
                     <EditText
+                        android:id="@+id/usernameRegister"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/username"
@@ -41,6 +42,7 @@
                         android:drawableLeft="@drawable/username_icon" />
 
                     <EditText
+                        android:id="@+id/emailRegister"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
@@ -49,6 +51,7 @@
                         android:drawableLeft="@drawable/login_icon" />
 
                     <EditText
+                        android:id="@+id/passwordRegister"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
@@ -58,6 +61,7 @@
                         android:drawableLeft="@drawable/password_icon"/>
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/registerButton"
                         android:layout_marginTop="8dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

@@ -56,6 +56,7 @@
                     android:textColor="@color/colorAccent"/>
 
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/loginButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -64,7 +65,7 @@
                     android:textColor="@color/White"/>
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/registerButton"
+                    android:id="@+id/registerFragmentButton"
                     android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
