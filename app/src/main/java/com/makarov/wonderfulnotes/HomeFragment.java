@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new EditFragment()).commit();
+                        .replace(R.id.fragment_container, new EditFragment()).addToBackStack("Home").commit();
             }
         });
 

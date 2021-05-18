@@ -256,4 +256,10 @@ public class MainActivity extends AppCompatActivity{
             openDB_from_file(selectedFile);
         }
     }
+
+    public void loginOnClick(View view) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new LoginFragment()).commit();
+        drawerLayout.closeDrawer(GravityCompat.START);
+    }
 }

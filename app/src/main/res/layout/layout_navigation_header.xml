@@ -20,12 +20,13 @@
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text = "Sign in"
+        android:onClick="loginOnClick"
         android:paddingLeft="48dp"
         android:paddingRight="48dp"
+        android:text="@string/sign_in"
+        app:backgroundTint="@color/Orange"
         app:icon="@drawable/sign_in"
-        app:iconTint="@null"
         app:iconSize="18dp"
-        app:backgroundTint="@color/Orange" />
+        app:iconTint="@null" />
 
 </LinearLayout>

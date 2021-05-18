@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "976678352357",
+    "project_id": "wonderfulnotes-1c445",
+    "storage_bucket": "wonderfulnotes-1c445.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976678352357:android:b2e06147c3241ad021ab0c",
+        "android_client_info": {
+          "package_name": "com.makarov.wonderfulnotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "976678352357-v71c384shk6311mb9hjgkf4a1r5b8kd7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATyMQr84JjGJacyHAzkYGnOSnC0qnNuRw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "976678352357-v71c384shk6311mb9hjgkf4a1r5b8kd7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
