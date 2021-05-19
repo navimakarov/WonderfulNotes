@@ -62,6 +62,15 @@ A simple application for taking notes and managing daily tasks.
     <td><img src="screenshots/database.jpg" width=270 height=480></td>
   </tr>
  </table>
+ 
+ <table>
+   <tr>
+     <td>Firebase DataBase</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/firebase.png" width=567 height=400></td>
+  </tr>
+ </table>
 
 #### TODO
 :small_red_triangle_down: Custom openFileDialog
