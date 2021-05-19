@@ -64,10 +64,6 @@ A simple application for taking notes and managing daily tasks.
  </table>
 
 #### TODO
-:small_red_triangle_down:: FireBase accounts
-<br>
-:small_red_triangle_down: Login page
-<br>
 :small_red_triangle_down: Custom openFileDialog
 <br>
 :small_red_triangle_down: FireBase database import/export
