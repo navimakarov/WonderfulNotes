@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.os.PersistableBundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -168,6 +170,13 @@ public class MainActivity extends AppCompatActivity{
         navigationView.removeHeaderView(navigationView.getHeaderView(0));
         if (auth.getCurrentUser() != null) {
             navigationView.inflateHeaderView(R.layout.layout_navigation_header_signed_in);
+            View headerView = navigationView.getHeaderView(0);
+            TextView emailNav = headerView.findViewById(R.id.emailNav);
+            TextView usernameNav = headerView.findViewById(R.id.usernameNav);
+
+            emailNav.setText(auth.getCurrentUser().getEmail());
+            usernameNav.setText(auth.getCurrentUser().getDisplayName());
+
         }
         else {
             navigationView.inflateHeaderView(R.layout.layout_navigation_header);
@@ -335,4 +344,5 @@ public class MainActivity extends AppCompatActivity{
                 .replace(R.id.fragment_container, new LoginFragment()).commit();
         drawerLayout.closeDrawer(GravityCompat.START);
     }
+
 }

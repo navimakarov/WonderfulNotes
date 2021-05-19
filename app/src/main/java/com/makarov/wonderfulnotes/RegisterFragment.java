@@ -1,11 +1,13 @@
 package com.makarov.wonderfulnotes;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -20,6 +22,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -42,9 +46,10 @@ public class RegisterFragment extends Fragment {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hide_keyboard();
                 String email = emailEdit.getText().toString().trim();
                 String password = passwordEdit.getText().toString().trim();
-                String user = usernameEdit.getText().toString().trim();
+                String username = usernameEdit.getText().toString().trim();
 
                 String regex = "^(.+)@(.+)$";
                 Pattern pattern = Pattern.compile(regex);
@@ -56,7 +61,7 @@ public class RegisterFragment extends Fragment {
                     errorSnackBar.show();
                     return;
                 }
-                if (TextUtils.isEmpty(user)) {
+                if (TextUtils.isEmpty(username)) {
                     Snackbar errorSnackBar = Snackbar.make(getActivity().findViewById(R.id.drawerLayout), "Enter username!", Snackbar.LENGTH_LONG);
                     errorSnackBar.setTextColor(Color.RED);
                     errorSnackBar.show();
@@ -90,6 +95,10 @@ public class RegisterFragment extends Fragment {
                                     errorSnackBar.setTextColor(Color.RED);
                                     errorSnackBar.show();
                                 } else {
+                                    FirebaseUser user = auth.getCurrentUser();
+                                    UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(username).build();
+                                    user.updateProfile(profile);
                                     getActivity().recreate();
                                     getActivity().getSupportFragmentManager().beginTransaction()
                                             .replace(R.id.fragment_container, new HomeFragment()).commit();
@@ -101,6 +110,12 @@ public class RegisterFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    private void hide_keyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        assert imm != null;
+        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
 
 }
