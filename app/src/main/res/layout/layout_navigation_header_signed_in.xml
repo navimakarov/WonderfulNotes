@@ -13,7 +13,7 @@
        android:layout_marginTop="20dp"
        app:cardCornerRadius="30dp">
    <ImageView
-       android:id="@+id/addIcon"
+       android:id="@+id/profileImage"
        android:layout_width="60dp"
        android:layout_height="60dp"
        android:src="@drawable/profile_icon"

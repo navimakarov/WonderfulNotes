@@ -14,6 +14,7 @@ import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,9 +33,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Text;
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity{
     private static final int IMAGE_PICK_CODE = 1;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+    private ImageView profilePic;
     private  FirebaseAuth auth;
     private boolean signedOut;
     private StorageReference storageRef;
@@ -177,14 +182,32 @@ public class MainActivity extends AppCompatActivity{
     public void onStart() {
         super.onStart();
         navigationView.removeHeaderView(navigationView.getHeaderView(0));
-        if (auth.getCurrentUser() != null) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null) {
             navigationView.inflateHeaderView(R.layout.layout_navigation_header_signed_in);
             View headerView = navigationView.getHeaderView(0);
+            profilePic = headerView.findViewById(R.id.profileImage);
             TextView emailNav = headerView.findViewById(R.id.emailNav);
             TextView usernameNav = headerView.findViewById(R.id.usernameNav);
 
-            emailNav.setText(auth.getCurrentUser().getEmail());
-            usernameNav.setText(auth.getCurrentUser().getDisplayName());
+            String email = user.getEmail();
+            String username = user.getDisplayName();
+
+            emailNav.setText(email);
+            usernameNav.setText(username);
+
+            StorageReference profileRef = storageRef.child("users/" + auth.getCurrentUser().getUid() + "/profile.jpg");
+            profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.get().load(uri).into(profilePic);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull @NotNull Exception e) {
+                    profilePic.setImageResource(R.drawable.profile_icon);
+                }
+            });
 
         }
         else {
@@ -365,7 +388,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void uploadImageToFirebase(Uri imageUri) {
-        StorageReference fileRef = storageRef.child("profile.jpg");
+        StorageReference fileRef = storageRef.child("users/" + auth.getCurrentUser().getUid() + "/profile.jpg");
         fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -373,7 +396,12 @@ public class MainActivity extends AppCompatActivity{
                 imageLoadDoneSnackbar.setDuration(5000);
                 imageLoadDoneSnackbar.setTextColor(Color.YELLOW);
                 imageLoadDoneSnackbar.show();
-                // TODO change picture
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.get().load(uri).into(profilePic);
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

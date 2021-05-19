@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
@@ -98,12 +99,17 @@ public class RegisterFragment extends Fragment {
                                     FirebaseUser user = auth.getCurrentUser();
                                     UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
                                             .setDisplayName(username).build();
-                                    user.updateProfile(profile);
-                                    getActivity().recreate();
-                                    getActivity().getSupportFragmentManager().beginTransaction()
-                                            .replace(R.id.fragment_container, new HomeFragment()).commit();
-                                    DrawerLayout dl = getActivity().findViewById(R.id.drawerLayout);
-                                    dl.openDrawer(GravityCompat.START);
+                                    assert user != null;
+                                    user.updateProfile(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            getActivity().recreate();
+                                            getActivity().getSupportFragmentManager().beginTransaction()
+                                                    .replace(R.id.fragment_container, new HomeFragment()).commit();
+                                            DrawerLayout dl = getActivity().findViewById(R.id.drawerLayout);
+                                            dl.openDrawer(GravityCompat.START);
+                                        }
+                                    });
                                 }
                             }
                         });
