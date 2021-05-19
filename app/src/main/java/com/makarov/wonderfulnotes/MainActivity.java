@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PersistableBundle;
+import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -26,9 +27,14 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Text;
@@ -47,10 +53,12 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity{
 
     private static final int STORAGE_PERMISSION_CODE = 0;
+    private static final int IMAGE_PICK_CODE = 1;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private  FirebaseAuth auth;
     private boolean signedOut;
+    private StorageReference storageRef;
     // TODO icon when no notes found
     // TODO add logs
     // TODO ask for storage permission
@@ -62,6 +70,7 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         auth = FirebaseAuth.getInstance();
+        storageRef = FirebaseStorage.getInstance().getReference();
         signedOut = false;
 
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -331,11 +340,16 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 0 && resultCode == RESULT_OK) {
+        if(requestCode == STORAGE_PERMISSION_CODE && resultCode == RESULT_OK) {
             assert data != null;
             Uri selectedFile = data.getData();
             assert selectedFile != null;
             openDB_from_file(selectedFile);
+        }
+
+        else if(requestCode == IMAGE_PICK_CODE && resultCode == RESULT_OK) {
+            Uri imageUri = data.getData();
+            uploadImageToFirebase(imageUri);
         }
     }
 
@@ -343,6 +357,30 @@ public class MainActivity extends AppCompatActivity{
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new LoginFragment()).commit();
         drawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    public void loadPic(View view) {
+        Intent openGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(openGalleryIntent, IMAGE_PICK_CODE);
+    }
+
+    private void uploadImageToFirebase(Uri imageUri) {
+        StorageReference fileRef = storageRef.child("profile.jpg");
+        fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Snackbar imageLoadDoneSnackbar = Snackbar.make(drawerLayout, "Image was uploaded!", Snackbar.LENGTH_LONG);
+                imageLoadDoneSnackbar.setDuration(5000);
+                imageLoadDoneSnackbar.setTextColor(Color.YELLOW);
+                imageLoadDoneSnackbar.show();
+                // TODO change picture
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                showError("Error! Image was not uploaded!");
+            }
+        });
     }
 
 }
