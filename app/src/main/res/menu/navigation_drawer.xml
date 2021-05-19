@@ -32,6 +32,13 @@
             android:id="@+id/about_item"
             android:title="@string/about_item"
             android:icon="@drawable/info_menu_icon"/>
+
+                        <item
+                            android:id="@+id/sign_out_item"
+                            android:title="@string/signout_item"
+                            android:icon="@drawable/signout_menu_icon"/>
+
+
                 </menu>
         </item>
 

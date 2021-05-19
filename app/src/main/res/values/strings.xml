@@ -18,6 +18,7 @@
     <string name="others_item">Others</string>
     <string name="settings_item">Settings</string>
     <string name="about_item">About</string>
+    <string name="signout_item">Sign out</string>
 
     <string name="welcome">Welcome!</string>
 

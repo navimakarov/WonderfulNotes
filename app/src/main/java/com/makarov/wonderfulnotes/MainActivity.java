@@ -2,6 +2,7 @@ package com.makarov.wonderfulnotes;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity{
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private  FirebaseAuth auth;
+    private boolean signedOut;
     // TODO icon when no notes found
     // TODO add logs
     // TODO ask for storage permission
@@ -56,8 +60,15 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         auth = FirebaseAuth.getInstance();
+        signedOut = false;
 
         drawerLayout = findViewById(R.id.drawerLayout);
+        if(savedInstanceState != null) {
+            boolean signedOutSavedInstance = savedInstanceState.getBoolean("SignOut");
+            if(signedOutSavedInstance) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        }
         navigationView = findViewById(R.id.navigationView);
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -86,6 +97,39 @@ public class MainActivity extends AppCompatActivity{
                     case R.id.about_item:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new AboutFragment()).commit();
+                        break;
+                    case R.id.sign_out_item:
+                        if (auth.getCurrentUser() != null) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                            builder.setTitle("Sign out");
+                            builder.setMessage("Are you sure you want to sign out?");
+
+                            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int which) {
+                                    FirebaseAuth.getInstance().signOut();
+                                    signedOut = true;
+                                    recreate();
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    drawerLayout.openDrawer(GravityCompat.START);
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            AlertDialog alert = builder.create();
+                            alert.show();
+                        }
+                        else {
+                            showError("Not signed in");
+                        }
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
@@ -105,6 +149,17 @@ public class MainActivity extends AppCompatActivity{
             navigationView.setCheckedItem(R.id.home_item);
         }
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("SignOut", signedOut);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull @NotNull Bundle outState, @NonNull @NotNull PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 
     @Override
