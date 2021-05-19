@@ -20,17 +20,6 @@ A simple application for taking notes and managing daily tasks.
     <td><img src="screenshots/navigationView.jpg" width=270 height=480></td>
   </tr>
  </table>
-  
-<table>
-  <tr>
-    <td>Remove a note</td>
-     <td>Create a note</td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/remove.jpg" width=270 height=480></td>
-    <td><img src="screenshots/edit.jpg" width=270 height=480></td>
-  </tr>
- </table>
 
  <table>
   <tr>
@@ -43,6 +32,17 @@ A simple application for taking notes and managing daily tasks.
   </tr>
  </table>
 
+<table>
+  <tr>
+    <td>Remove a note</td>
+     <td>Create a note</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/remove.jpg" width=270 height=480></td>
+    <td><img src="screenshots/edit.jpg" width=270 height=480></td>
+  </tr>
+ </table>
+ 
  <table>
    <tr>
      <td>Horizontal View</td>
