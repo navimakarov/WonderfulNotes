@@ -68,7 +68,7 @@ A simple application for taking notes and managing daily tasks.
      <td>Firebase DataBase</td>
   </tr>
   <tr>
-    <td><img src="screenshots/firebase.png" width=567 height=400></td>
+    <td><img src="screenshots/firebase.png" width=567 height=350></td>
   </tr>
  </table>
 
