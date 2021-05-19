@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PersistableBundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,8 +38,11 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -57,6 +61,7 @@ import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity{
@@ -177,15 +182,46 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void importFromCloud() {
-        Snackbar cloudImportDoneSnackbar = Snackbar.make(drawerLayout, "Exported notes to cloud", Snackbar.LENGTH_LONG);
-        cloudImportDoneSnackbar.setTextColor(Color.YELLOW);
-        cloudImportDoneSnackbar.show();
+        FirebaseUser user = auth.getCurrentUser();
+        if(user != null) {
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users/" + user.getUid() + "/DB");
+            ValueEventListener eventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    if(snapshot.getChildrenCount() == 0) {
+                        showError("No notes to import!");
+                    }
+                    else {
+                        ArrayList<Note> notes = new ArrayList<>();
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            notes.add(new Note(String.valueOf(ds.getValue())));
+                        }
+                        Collections.reverse(notes);
+                        SQLiteDatabase db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
+                        db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
+                        DataBase.write_to_db(db, notes);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new HomeFragment()).commit();
+                        Snackbar cloudImportDoneSnackbar = Snackbar.make(drawerLayout, "Imported notes from cloud", Snackbar.LENGTH_LONG);
+                        cloudImportDoneSnackbar.setTextColor(Color.YELLOW);
+                        cloudImportDoneSnackbar.show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    showError("Import from cloud failed!");
+                }
+            };
+            ref.addListenerForSingleValueEvent(eventListener);
+        }
     }
 
     private void exportToCloud() {
         FirebaseUser user = auth.getCurrentUser();
         if(user != null) {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users/" + user.getUid() + "/DB");
+            ref.removeValue();
             SQLiteDatabase db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
             db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
             ArrayList<Note> notes = new ArrayList<>();

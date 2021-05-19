@@ -1,5 +1,6 @@
 package com.makarov.wonderfulnotes;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -29,5 +30,20 @@ public class DataBase {
         }
         Collections.reverse(notes);
         query.close();
+    }
+
+    public static void write_to_db(SQLiteDatabase db, ArrayList<Note> notes) {
+        db.delete("notes", null, null);
+        for(Note note : notes) {
+            ContentValues cv = new ContentValues();
+            cv.put("date", note.getDate());
+            cv.put("title", note.getTitle());
+            cv.put("note", note.getText());
+            int highlight = 0;
+            if(note.highlighted())
+                highlight = 1;
+            cv.put("highlight", highlight);
+            db.insert("notes", null, cv);
+        }
     }
 }
