@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,6 +37,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -52,6 +56,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity{
@@ -104,9 +109,13 @@ public class MainActivity extends AppCompatActivity{
                         checkPermission();
                         // Grant access and export database if access is granted
                         break;
-                    case R.id.cloud_item:
+                    case R.id.cloud_import_item:
+                        importFromCloud();
                         break;
                         //TODO
+                    case R.id.cloud_export_item:
+                        exportToCloud();
+                        break;
                     case R.id.settings_item:
                         //TODO
                         break;
@@ -167,6 +176,31 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    private void importFromCloud() {
+        Snackbar cloudImportDoneSnackbar = Snackbar.make(drawerLayout, "Exported notes to cloud", Snackbar.LENGTH_LONG);
+        cloudImportDoneSnackbar.setTextColor(Color.YELLOW);
+        cloudImportDoneSnackbar.show();
+    }
+
+    private void exportToCloud() {
+        FirebaseUser user = auth.getCurrentUser();
+        if(user != null) {
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users/" + user.getUid() + "/DB");
+            SQLiteDatabase db = getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
+            db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
+            ArrayList<Note> notes = new ArrayList<>();
+            DataBase.read_from_db(db, notes);
+            for (Note note : notes) {
+                ref.push().setValue(note);
+            }
+
+            Snackbar cloudExportDoneSnackbar = Snackbar.make(drawerLayout, "Exported notes to cloud", Snackbar.LENGTH_LONG);
+            cloudExportDoneSnackbar.setTextColor(Color.YELLOW);
+            cloudExportDoneSnackbar.show();
+
+        }
+    }
+
     @Override
     protected void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -183,6 +217,8 @@ public class MainActivity extends AppCompatActivity{
         super.onStart();
         navigationView.removeHeaderView(navigationView.getHeaderView(0));
         FirebaseUser user = auth.getCurrentUser();
+        Menu menu = navigationView.getMenu();
+        MenuItem cloud = menu.findItem(R.id.cloud_item);
         if (user != null) {
             navigationView.inflateHeaderView(R.layout.layout_navigation_header_signed_in);
             View headerView = navigationView.getHeaderView(0);
@@ -208,10 +244,11 @@ public class MainActivity extends AppCompatActivity{
                     profilePic.setImageResource(R.drawable.profile_icon);
                 }
             });
-
+            cloud.setVisible(true);
         }
         else {
             navigationView.inflateHeaderView(R.layout.layout_navigation_header);
+            cloud.setVisible(false);
         }
     }
 
@@ -401,12 +438,17 @@ public class MainActivity extends AppCompatActivity{
                     public void onSuccess(Uri uri) {
                         Picasso.get().load(uri).into(profilePic);
                     }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+                        showError("Failed to load an image!");
+                    }
                 });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull @NotNull Exception e) {
-                showError("Error! Image was not uploaded!");
+                showError("Failed to load an image!");
             }
         });
     }

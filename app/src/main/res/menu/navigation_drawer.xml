@@ -17,9 +17,20 @@
         <item
             android:id="@+id/cloud_item"
             android:title="@string/cloud_item"
-            android:icon="@drawable/cloud_menu_icon"/>
+            android:visible="false">
+            <menu>
+        <item
+            android:id="@+id/cloud_import_item"
+            android:title="@string/cloud_import_item"
+            android:icon="@drawable/cloud_import_icon" />
 
+                    <item
+                        android:id="@+id/cloud_export_item"
+                        android:title="@string/cloud_export_item"
+                        android:icon="@drawable/cloud_export_icon" />
 
+            </menu>
+        </item>
         <item
             android:title="@string/others_item">
                 <menu>

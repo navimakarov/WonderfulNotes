@@ -1,9 +1,9 @@
 package com.makarov.wonderfulnotes;
 
 class Note {
-    private String date, title, text;
-    private boolean highlighted = false;
-    private int id;
+    public String date, title, text;
+    public boolean highlighted = false;
+    public int id;
 
     Note(String date, String title, String text, int id) {
         this.date = date;

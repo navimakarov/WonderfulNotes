@@ -15,6 +15,8 @@
     <string name="import_item">Import</string>
     <string name="export_item">Export</string>
     <string name="cloud_item">Cloud</string>
+    <string name="cloud_import_item">Import from Cloud</string>
+    <string name="cloud_export_item">Export to Cloud</string>
     <string name="others_item">Others</string>
     <string name="settings_item">Settings</string>
     <string name="about_item">About</string>

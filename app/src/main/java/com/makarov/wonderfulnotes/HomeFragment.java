@@ -37,8 +37,6 @@ public class HomeFragment extends Fragment {
     private NotesRecViewAdapter adapter;
     private ArrayList<Note> notes = new ArrayList<>();
 
-    private static final int STORAGE_PERMISSION_CODE = 0;
-
     private SQLiteDatabase db;
     @Nullable
     @org.jetbrains.annotations.Nullable
@@ -50,7 +48,7 @@ public class HomeFragment extends Fragment {
 
         db = getActivity().getBaseContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
         db.execSQL("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, date TEXT, title TEXT, note TEXT, highlight INTEGER);");
-        read_from_db();
+        DataBase.read_from_db(db, notes);
 
         newNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +73,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 db.delete("notes", "id=" + viewHolder.itemView.getTag(), null);
-                read_from_db();
+                DataBase.read_from_db(db, notes);
                 adapter.notifyItemRemoved(viewHolder.getLayoutPosition());
             }
 
@@ -105,27 +103,4 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private void read_from_db() {
-        Cursor query = db.rawQuery("SELECT * FROM notes;", null);
-
-        notes.clear();
-        if(query.moveToFirst()){
-            do{
-                int id = query.getInt(0);
-                String date = query.getString(1);
-                String title = query.getString(2);
-                String text = query.getString(3);
-                int highlight = query.getInt(4);
-
-                Note note = new Note(date, title, text, id);
-                if(highlight == 1){
-                    note.highlight();
-                }
-                notes.add(note);
-            }
-            while(query.moveToNext());
-        }
-        Collections.reverse(notes);
-        query.close();
-    }
 }
